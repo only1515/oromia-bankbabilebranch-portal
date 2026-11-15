@@ -1,0 +1,516 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oromia Bank - Rural Branch Smart Portal</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="modal" id="authModal">
+<div class="modal-card">
+<h3>Admin Login</h3>
+<form id="loginForm">
+<div class="form-group">
+<label for="adminUsername">Username</label>
+<input id="adminUsername" type="text" value="admin" required>
+</div>
+<div class="form-group">
+<label for="adminPassword">Password</label>
+<input id="adminPassword" type="password" value="admin123" required>
+</div>
+<p style="font-size: 12px; color: #667085; margin-bottom: 8px;">Default admin credentials: admin /
+admin123</p>
+<div class="actions">
+<button type="button" class="ghost-btn" onclick="closeAuthModal()">Cancel</button>
+<button type="submit" class="primary-btn">Login</button>
+</div>
+</form>
+<div id="authMessage" class="status-message"></div>
+</div>
+</div>
+<div class="modal" id="customerAuthModal">
+<div class="modal-card">
+<h3 id="customerAuthTitle">Customer Login</h3>
+<form id="customerLoginForm">
+<div class="form-group"><label for="customerLoginPhone">Phone Number</label><input
+id="customerLoginPhone" type="tel" required></div>
+<div class="form-group"><label for="customerLoginPassword">Password</label><input
+id="customerLoginPassword" type="password" required></div>
+<div class="actions"><button type="button" class="ghost-btn"
+onclick="closeCustomerAuthModal()">Cancel</button><button type="submit"
+class="primary-btn">Login</button></div>
+</form>
+<form id="customerRegisterForm" style="display:none;">
+<div class="form-group"><label for="customerFullName">Full Name</label><input id="customerFullName"
+required></div>
+<div class="form-group"><label for="customerRegisterPhone">Phone Number</label><input
+id="customerRegisterPhone" type="tel" required></div>
+<div class="form-group"><label for="customerRegisterPassword">Password (8+ characters)</label><input
+id="customerRegisterPassword" type="password" minlength="8" required></div>
+<div class="actions"><button type="button" class="ghost-btn"
+onclick="closeCustomerAuthModal()">Cancel</button><button type="submit"
+class="primary-btn">Create Account</button></div>
+</form>
+<p id="customerAuthMessage" class="status-message"></p>
+<p class="auth-switch" id="customerAuthSwitch" onclick="toggleCustomerAuthMode()">Create a customer account
+</p>
+</div>
+</div>
+<header>
+<div class="logo-area">
+<div class="logo-icon">OB</div>
+<div class="brand-title">
+<h1>Oromia Bank</h1>
+<p>Baankii Oromiyaa</p>
+</div>
+</div>
+<nav class="top-nav" aria-label="Main navigation">
+<a href="#home" id="nav-home" data-public-target="home">Home</a>
+<div class="nav-dropdown" id="servicesNavDropdown">
+<a href="#services" id="nav-services" data-public-target="services" aria-haspopup="true" aria-expanded="false">Services</a>
+<div class="nav-dropdown-menu" id="servicesNavMenu" aria-label="Portal services">
+<button type="button" data-nav-service="ticket" id="service-nav-ticket">Digital Ticket</button>
+<button type="button" data-nav-service="loan" id="service-nav-loan">Micro-Loan Pre-Screening</button>
+<button type="button" data-nav-service="branch" id="service-nav-branch">Live Branch</button>
+<button type="button" data-nav-service="track" id="service-nav-track">Track Your Service</button>
+</div>
+</div>
+<a href="#about" id="nav-about" data-public-target="about">About</a>
+<a href="#contact" id="nav-contact" data-public-target="contact">Contact</a>
+</nav>
+<div id="languageSwitcher" class="lang-switch" aria-label="Language switcher">
+<button data-lang="en" id="btn-en" class="active" type="button">EN</button>
+<button data-lang="oro" id="btn-oro" type="button">ORO</button>
+<button data-lang="am" id="btn-am" type="button">AMH</button>
+</div>
+<div id="accessSwitcher" class="access-switch" aria-label="Portal access switcher">
+<button class="admin-button" id="customerToggleBtn" type="button">Customer Login</button>
+<button class="admin-button" id="adminToggleBtn" type="button">Admin Login</button>
+</div>
+</header>
+<section class="hero" id="home" data-public-page="home">
+<h2 id="txt-hero-title">Babile Branch Smart Service Portal</h2>
+<p id="txt-hero-sub">Fast queues & agricultural loan eligibility estimator for East Hararghe traders</p>
+</section>
+<main class="public-services-page public-page-active" id="services" data-public-page="services">
+<div class="service-selector" aria-label="Customer service selection">
+<button class="service-choice active" type="button" data-service="ticket" id="service-ticket">Digital
+Ticket</button>
+<button class="service-choice" type="button" data-service="loan" id="service-loan">Micro-Loan
+Pre-Screening</button>
+<button class="service-choice" type="button" data-service="branch" id="service-branch">Live Branch</button>
+<button class="service-choice" type="button" data-service="track" id="service-track">Track Your Service</button>
+</div>
+<div class="service-panel active" id="panel-ticket">
+<div class="container">
+<div class="card">
+<h3 id="txt-q-title">Get Digital Queue Ticket</h3>
+<div class="form-group">
+<label id="lbl-name">Full Name</label>
+<input type="text" id="q-name" placeholder="e.g. Ahmed Ali">
+</div>
+<div class="form-group">
+<label id="lbl-phone">Phone Number</label>
+<input type="text" id="q-phone" placeholder="0911......">
+</div>
+<div class="form-group">
+<label id="lbl-account-number">Bank Account Number</label>
+<input type="text" id="q-account-number" placeholder="Enter your bank account number" required autocomplete="off">
+</div>
+<div class="form-group">
+<label id="lbl-service">Service Type</label>
+<select id="q-service">
+<option value="Cash Deposit/Withdrawal" id="option-cash">Cash Deposit / Withdrawal</option>
+<option value="Micro Loan Inquiry" id="option-loan">Micro Loan Inquiry</option>
+<option value="Account Opening" id="option-account">Account Opening</option>
+</select>
+</div>
+<button class="btn-submit" onclick="issueTicket()" id="btn-q-submit">Get Ticket</button>
+<div class="ticket-result" id="ticket-res">
+<p>Your Ticket: <strong id="res-num" style="color:var(--oromia-blue); font-size:18px;"></strong></p>
+<p>Est. Wait: <span id="res-wait">12 Mins</span></p>
+<p id="res-queue-position" aria-live="polite">Checking customers ahead...</p>
+<p id="res-queue-notice" style="margin-top: 6px; font-size: 13px;"></p>
+</div>
+</div>
+</div>
+</div>
+<div class="service-panel" id="panel-loan">
+<div class="container">
+<div class="card">
+<h3 id="txt-loan-title">Micro-Loan Pre-Screening</h3>
+<div class="form-group">
+<label id="lbl-applicant">Applicant Name</label>
+<input type="text" id="l-name" placeholder="Full Name">
+</div>
+<div class="form-group">
+<label id="lbl-loan-type">Collateral Type</label>
+<select id="l-type">
+<option value="Groundnut Harvest" id="option-groundnut">Groundnut Harvest Stock</option>
+<option value="Livestock Trade" id="option-livestock">Livestock / Cattle Stock</option>
+<option value="Irrigation Pump" id="option-irrigation">Irrigation Equipment</option>
+</select>
+</div>
+<div class="form-group">
+<label id="lbl-asset-val">Estimated Asset Value (ETB)</label>
+<input type="number" id="l-val" placeholder="e.g. 200000">
+</div>
+<button class="btn-submit" onclick="calcLoan()" id="btn-l-submit">Estimate Eligibility</button>
+<div class="loan-result" id="loan-res">
+<p id="label-est-loan">Est. Loan Amount:</p>
+<h4 id="res-loan-amount" style="color:var(--oromia-green); font-size:20px;">0 ETB</h4>
+</div>
+</div>
+</div>
+</div>
+<div class="service-panel" id="panel-branch">
+<div class="container">
+<div class="card">
+<h3 id="txt-status-title">Live Branch Status</h3>
+<p><strong id="label-branch">Branch:</strong> Babile Main Branch</p>
+<p style="margin-top:8px;"><strong id="label-network">Network Mode:</strong> <span class="status-badge"
+id="publicBranchStatus">ONLINE</span></p>
+<p style="margin-top:8px;"><strong id="label-wait">Avg Waiting Time:</strong> <span
+id="publicWaitTime">12</span>
+<span id="label-minutes">Minutes</span>
+</p>
+<p style="margin-top:8px;"><strong id="label-counters">Active Counter:</strong> <span
+id="publicCounters">Counter 1 &
+2</span>
+</p>
+</div>
+</div>
+</div>
+<div class="service-panel" id="panel-track">
+<section class="lookup-card">
+<h3 id="track-title" style="color: var(--oromia-blue); margin-bottom: 14px;">Track Your Service</h3>
+<div class="lookup-grid">
+<div class="form-group">
+<label for="ticketLookup" id="label-ticket-number">Ticket number</label>
+<input id="ticketLookup" placeholder="e.g. BBL-1234">
+</div>
+<button class="btn-submit" id="btn-check-ticket" type="button" onclick="lookupTicket()">Check
+Ticket</button>
+<div class="form-group">
+<label for="loanLookup" id="label-loan-id">Loan application ID</label>
+<input id="loanLookup" type="number" placeholder="e.g. 12">
+</div>
+<button class="btn-submit" id="btn-check-loan" type="button" onclick="lookupLoan()">Check Loan</button>
+</div>
+<div id="lookupResult" class="result-message"></div>
+</section>
+</div>
+<section class="live-queue" aria-labelledby="liveQueueTitle">
+<div class="live-queue-header">
+<div>
+<div class="live-queue-title">
+<span class="live-indicator" id="liveQueueIndicator" aria-hidden="true"></span>
+<h3 id="liveQueueTitle">Live Ticket Viewer</h3>
+</div>
+<div class="live-queue-meta" aria-live="polite">
+<span id="liveQueueConnection">Connecting</span>
+<span id="liveQueueUpdated">Waiting for update</span>
+</div>
+</div>
+<button class="live-refresh-btn" id="btn-refresh-queue" type="button" onclick="loadLiveQueue()"
+aria-label="Refresh live ticket queue">Refresh</button>
+</div>
+<div class="live-queue-list">
+<table>
+<thead>
+<tr>
+<th id="queue-col-position">Position</th>
+<th id="queue-col-ticket">Ticket</th>
+<th id="queue-col-service">Service</th>
+<th id="queue-col-status">Status</th>
+</tr>
+</thead>
+<tbody id="liveQueueBody">
+<tr>
+<td colspan="4" class="live-empty">Loading tickets...</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<main class="public-about-page" id="about" data-public-page="about">
+<section class="portal-section" id="aboutInfo" aria-labelledby="aboutTitle">
+<h2 id="aboutTitle">About Oromia Bank</h2>
+<p class="about-copy" id="aboutCopy">Oromia Bank S.C. is an Ethiopian financial institution serving individuals,
+businesses, farmers, and communities. This portal supports customers visiting the Babile Main Branch with
+digital queue tickets, service tracking, and loan pre-screening.</p>
+</section>
+<section class="portal-section" id="faq" aria-labelledby="faqTitle">
+<h2 id="faqTitle">Frequently Asked Questions</h2>
+<div class="faq-list">
+<details>
+<summary id="faqTicketQuestion">How do I get a queue ticket?</summary>
+<p id="faqTicketAnswer">Choose Digital Ticket, enter your name and phone number, select a service, then
+submit. Keep the ticket number to track your place in the queue.</p>
+</details>
+<details>
+<summary id="faqLoanQuestion">What does the loan pre-screening do?</summary>
+<p id="faqLoanAnswer">It provides an initial estimate based on the information entered. It is not a loan
+approval; the branch will review any application.</p>
+</details>
+<details>
+<summary id="faqContactQuestion">Who can read my contact message?</summary>
+<p id="faqContactAnswer">Contact messages are stored privately and can only be viewed by authorized bank
+administrators and managers.</p>
+</details>
+</div>
+</section>
+</main>
+<section class="portal-section" id="contact" data-public-page="contact" aria-labelledby="contactTitle">
+<h2 id="contactTitle">Contact Us</h2>
+<div class="contact-layout">
+<div class="contact-branch">
+<strong id="contactBranchName">Babile Main Branch</strong>
+<p id="contactBranchNote">Send a comment or service question to the branch manager using the form.</p>
+</div>
+<form class="contact-form" id="contactForm">
+<div>
+<label for="contactName" id="contactNameLabel">Your name</label>
+<input id="contactName" name="name" autocomplete="name" maxlength="100" required>
+</div>
+<div>
+<label for="contactDetails" id="contactDetailsLabel">Phone or email (optional)</label>
+<input id="contactDetails" name="contact" autocomplete="email" maxlength="120">
+</div>
+<div>
+<label for="contactMessage" id="contactMessageLabel">Comment</label>
+<textarea id="contactMessage" name="message" maxlength="2000" required></textarea>
+</div>
+<button class="btn-submit" id="contactSubmit" type="submit">Send comment</button>
+<p class="contact-status" id="contactStatus" aria-live="polite"></p>
+</form>
+</div>
+</section>
+<section class="admin-panel hidden" id="adminPanel">
+<div class="admin-shell">
+<div class="admin-header">
+<div>
+<h2>Admin Dashboard</h2>
+<p style="opacity: 0.9; margin-top: 6px;">Branch operations and service monitoring</p>
+</div>
+<div class="toolbar">
+<button class="secondary-btn" id="exportTicketsBtn" type="button"
+onclick="exportAdminData('tickets')">Export Tickets</button>
+<button class="secondary-btn" id="exportLoanBtn" type="button"
+onclick="exportAdminData('loans')">Export Approvals</button>
+<button class="secondary-btn" onclick="toggleAdminDashboard()">Close</button>
+<button class="primary-btn" onclick="handleLogout()">Logout</button>
+</div>
+</div>
+<div class="admin-body">
+<div class="admin-layout">
+<nav class="admin-sidebar" aria-label="Admin dashboard sections">
+<button class="admin-nav-button active" type="button" data-admin-target="queueSection" aria-controls="queueSection" aria-current="page">Queue Management</button>
+<button class="admin-nav-button" type="button" data-admin-target="dailyReportSection" aria-controls="dailyReportSection">Active Tickets by Day</button>
+<button class="admin-nav-button" type="button" data-admin-target="auditSection" aria-controls="auditSection">Recent Activity</button>
+<button class="admin-nav-button" type="button" data-admin-target="contactMessagesSection" aria-controls="contactMessagesSection">Customer comments</button>
+<button class="admin-nav-button" type="button" data-admin-target="branchOpsSection" aria-controls="branchOpsSection">Branch Operations</button>
+<button class="admin-nav-button" type="button" data-admin-target="passwordSection" aria-controls="passwordSection">Account Security</button>
+</nav>
+<main class="admin-content" id="adminContent">
+<section class="admin-page" id="queueSection" data-admin-section="queueSection">
+<h3 class="admin-page-heading">Queue Management</h3>
+<div class="dashboard-tools">
+<div>
+<label for="adminSearch">Search records</label>
+<input id="adminSearch" placeholder="Name, phone, or ticket number">
+</div>
+<div>
+<label for="adminStatus">Ticket status</label>
+<select id="adminStatus">
+<option value="">All statuses</option>
+<option value="WAITING">Waiting</option>
+</select>
+</div>
+<button class="btn-submit" type="button" onclick="loadAdminDashboard()">Search Dashboard</button>
+<button class="secondary-btn" type="button" onclick="printDashboard()">Print Report</button>
+</div>
+<div class="stat-grid">
+<div class="stat-card">
+<div class="label">Customers Waiting</div>
+<div class="value" id="waitingCount">00</div>
+</div>
+<div class="stat-card">
+<div class="label">Loan Requests</div>
+<div class="value" id="loanCount">00</div>
+</div>
+<div class="stat-card">
+<div class="label">Avg. Wait Time</div>
+<div class="value" id="avgWaitDisplay">12 min</div>
+</div>
+<div class="stat-card">
+<div class="label">Branch Status</div>
+<div class="value" id="branchStatusDisplay">Online</div>
+</div>
+</div>
+<div class="analytics-section">
+<h3>Analytics Overview</h3>
+<div class="analytics-grid">
+<div class="metric-box">
+<div class="label">Active Ticket Records</div>
+<div class="value" id="analyticsTotalTickets">0</div>
+</div>
+<div class="metric-box">
+<div class="label">Currently Waiting</div>
+<div class="value" id="analyticsWaitingTickets">0</div>
+</div>
+<div class="metric-box">
+<div class="label">Approved Loans</div>
+<div class="value" id="analyticsApprovedLoans">0</div>
+</div>
+</div>
+<div class="analytics-charts">
+<div class="chart-panel">
+<h4>Service Mix</h4>
+<div id="serviceBreakdownChart"></div>
+</div>
+<div class="chart-panel">
+<h4>7-Day Ticket Trend</h4>
+<div id="analyticsTrendChart"></div>
+</div>
+</div>
+</div>
+<div class="table-section">
+<div>
+<table>
+<thead>
+<tr>
+<th>Position</th>
+<th>Customer</th>
+<th>Service</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="adminQueueBody"></tbody>
+</table>
+</div>
+<div>
+<h3 style="color: var(--oromia-blue); margin-bottom: 10px;">Loan Review</h3>
+<table>
+<thead>
+<tr>
+<th>Applicant</th>
+<th>Amount</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="adminLoanBody"></tbody>
+</table>
+</div>
+</div>
+</section>
+<section class="admin-page report-section" id="dailyReportSection" data-admin-section="dailyReportSection" hidden>
+<h3 style="color: var(--oromia-blue); margin-bottom: 12px;">Active Tickets by Creation Day</h3>
+<div id="dailyTicketChart"></div>
+</section>
+<section class="admin-page report-section" id="auditSection" data-admin-section="auditSection" hidden>
+<h3 style="color: var(--oromia-blue); margin-bottom: 12px;">Recent Activity</h3>
+<div class="admin-table-wrap">
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>User</th>
+<th>Action</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody id="auditBody"></tbody>
+</table>
+</div>
+</section>
+<section class="admin-page report-section" id="contactMessagesSection" data-admin-section="contactMessagesSection" hidden>
+<div class="live-queue-header">
+<div>
+<h3 id="contactInboxTitle">Customer comments</h3>
+<p id="contactInboxIntro">Private messages submitted through Contact Us.</p>
+</div>
+<button class="live-refresh-btn" id="refreshContactMessages" type="button">Refresh</button>
+</div>
+<div class="contact-inbox-wrap">
+<table class="contact-inbox-table">
+<thead>
+<tr>
+<th id="inboxNameHeading">Name</th>
+<th id="inboxContactHeading">Contact</th>
+<th id="inboxMessageHeading">Comment</th>
+<th id="inboxDateHeading">Received</th>
+<th id="inboxStatusHeading">Status</th>
+<th id="inboxActionHeading">Action</th>
+</tr>
+</thead>
+<tbody id="contactMessagesBody"></tbody>
+</table>
+</div>
+</section>
+<section class="admin-page" id="branchOpsSection" data-admin-section="branchOpsSection" hidden>
+<div class="alert-box">
+<strong>System Notice:</strong> Rural branch network is stable. Please prioritize SME loan approvals
+before 3:00 PM.
+</div>
+<div class="ops-form" id="branchOperationsForm">
+<h3 style="color: var(--oromia-blue); margin-bottom: 16px;">Branch Operations</h3>
+<div class="form-group">
+<label>Counter Status</label>
+<select id="branchStatus">
+<option>ONLINE</option>
+<option>OFFLINE</option>
+<option>MAINTENANCE</option>
+</select>
+</div>
+<div class="form-group">
+<label>Average Wait Minutes</label>
+<input id="branchWait" type="number" min="0" value="12">
+</div>
+<div class="form-group">
+<label>Active Counters</label>
+<select id="branchCounters">
+<option>Counter 1 Active</option>
+<option>Counter 2 Active</option>
+<option>Counter 3 Reserved</option>
+</select>
+</div>
+<button class="btn-submit" type="button" onclick="saveBranchSettings()">Save Branch
+Settings</button>
+</div>
+</section>
+<section class="admin-page ops-form" id="passwordSection" data-admin-section="passwordSection" hidden>
+<h3 style="color: var(--oromia-blue); margin-bottom: 16px;">Account Security</h3>
+<div class="form-group"><label>Current Password</label><input id="currentPassword" type="password">
+</div>
+<div class="form-group"><label>New Password</label><input id="newPassword" type="password"
+minlength="8"></div>
+<button class="btn-submit" type="button" onclick="changeAdminPassword()">Change Password</button>
+</section>
+</main>
+</div>
+</div>
+</div>
+</section>
+<footer>
+<div class="footer-content">
+<div>
+<strong>Oromia Bank</strong>
+<span>Babile Main Branch</span>
+</div>
+<nav class="footer-links" aria-label="Footer navigation">
+<a href="#about" id="footerAboutLink">About</a>
+<a href="#faq" id="footerFaqLink">FAQ</a>
+<a href="#contact" id="footerContactLink">Contact Us</a>
+</nav>
+</div>
+<p class="footer-copyright" id="footerCopyright">Oromia Bank Rural Branch Smart Service Portal &copy; 2026 |
+Babile Branch</p>
+</footer>
+<script src="js/app.js"></script>
+</body>
+</html>
